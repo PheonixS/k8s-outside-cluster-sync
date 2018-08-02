@@ -1,0 +1,27 @@
+real = 10.10.10.10:1020
+     protocol = udp
+     scheduler = lc
+     real = nginx-test-5b87dc4cd8-2hrlb:8080 gate 100
+     real = nginx-test-5b87dc4cd8-dcmld:8080 gate 80
+     real = nginx-test-5b87dc4cd8-dsvnw:8080 gate 80
+     real = nginx-test-5b87dc4cd8-bwtwb:8080 gate 80
+     real = nginx-test-5b87dc4cd8-r6mkl:8080 gate 80
+
+real = 20.20.20.20:2020
+     protocol = tcp
+     scheduler = wlc
+     real = nginx-test-5b87dc4cd8-2hrlb:8080 gate 100
+     real = nginx-test-5b87dc4cd8-dcmld:8080 gate 80
+     real = nginx-test-5b87dc4cd8-dsvnw:8080 gate 80
+     real = nginx-test-5b87dc4cd8-bwtwb:8080 gate 80
+     real = nginx-test-5b87dc4cd8-r6mkl:8080 gate 80
+
+real = 10.10.10.10:1010
+     protocol = udp
+     scheduler = lc
+     real = nginx-test-5b87dc4cd8-2hrlb:8080 gate 100
+     real = nginx-test-5b87dc4cd8-dcmld:8080 gate 80
+     real = nginx-test-5b87dc4cd8-dsvnw:8080 gate 80
+     real = nginx-test-5b87dc4cd8-bwtwb:8080 gate 80
+     real = nginx-test-5b87dc4cd8-r6mkl:8080 gate 80
+
