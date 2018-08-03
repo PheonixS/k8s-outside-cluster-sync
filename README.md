@@ -2,7 +2,7 @@
 This simple daemon allow you to sync TCP enabled application inside in Kubernetes cluster with external LVS servers.
 This is usefull only for on-premise installation of Kubernetes, then you cannot use load balancers. Like ELB.
 
-![Diagram](https://cloudcraft.co/api/blueprint/082a6501-5d3b-4a67-808c-ef63e4a5a10f/png?grid=true&transparent=false&width=1792&height=1063)
+![Diagram](scheme.png)
 
 Application create watch on update/modify/deletes of pods and update local configuration of lvs servers.
 It change weights for real serves from 0 to 100 with step 20. Sleep time is configurable.
