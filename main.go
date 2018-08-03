@@ -67,6 +67,7 @@ var globalConfig = make(virtuals, 0)
 type service struct {
 	label           string
 	namespace       string
+	sleepTime       time.Duration
 	destinationPort int
 }
 
@@ -135,7 +136,9 @@ func initNow() {
 	cnf.service.label = cfg.Section("main").Key("labelToMonitorName").String()
 	cnf.service.namespace = cfg.Section("main").Key("labelToMonitorNamespace").String()
 	cnf.service.destinationPort, _ = cfg.Section("main").Key("lvsDestionationPort").Int()
+	sleepTime, _ := cfg.Section("main").Key("lvsSleepTime").Int()
 
+	cnf.service.sleepTime = time.Duration(sleepTime)
 	cnf.clientSet, err = initK8S()
 	check(err)
 }
@@ -225,7 +228,7 @@ func updateWeighAllLVS(srv realServers) {
 }
 
 func writeEach(virtualAddress string, v virtual, f *os.File) {
-	_, _ = f.WriteString(fmt.Sprintf("real = %s\n", virtualAddress))
+	_, _ = f.WriteString(fmt.Sprintf("virtual = %s\n", virtualAddress))
 	_, _ = f.WriteString(fmt.Sprintf("     protocol = %s\n", v.protocol))
 	_, _ = f.WriteString(fmt.Sprintf("     scheduler = %s\n", v.scheduler))
 	for i := 0; i < len(v.real); i++ {
@@ -297,7 +300,7 @@ func addNewConnectorToLVSGracefully(pod v1.Pod, progress int) {
 			delete(states, pod.Name)
 			break
 		} else {
-			time.Sleep(15 * time.Second)
+			time.Sleep(cnf.service.sleepTime * time.Second)
 		}
 	}
 
