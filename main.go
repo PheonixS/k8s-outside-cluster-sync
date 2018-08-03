@@ -28,6 +28,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	ini "gopkg.in/ini.v1"
@@ -265,6 +266,16 @@ type statesType map[string]bool
 
 var states = make(statesType)
 
+var syncParallel sync.Mutex
+
+func updateParallel(srv realServers) {
+	syncParallel.Lock()
+	defer syncParallel.Unlock()
+
+	updateWeighAllLVS(srv)
+	writeConfig(cnf.configFile.name)
+}
+
 func addNewConnectorToLVSGracefully(pod v1.Pod, progress int) {
 	if states[pod.Name] == true {
 		return
@@ -289,12 +300,13 @@ func addNewConnectorToLVSGracefully(pod v1.Pod, progress int) {
 		data := []byte(`{"metadata": {"labels": {"progress": "` + progress + `"}}}}`)
 		_, err := cnf.clientSet.CoreV1().Pods(cnf.service.namespace).Patch(pod.Name, types.StrategicMergePatchType, data, "")
 		check(err)
+
 		var srv realServers
 		srv.address = pod.Name
 		srv.port = cnf.service.destinationPort
 		srv.weight = i
-		updateWeighAllLVS(srv)
-		writeConfig(cnf.configFile.name)
+
+		updateParallel(srv)
 
 		if i == 100 {
 			delete(states, pod.Name)
